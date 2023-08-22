@@ -10,11 +10,6 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
     }
 
-    public void Dispose()
-    {
-        throw new NotImplementedException();
-    }
-
     public DbSet<Account> Account { get; set; }
     public DbSet<Note> Note { get; set; }
     public DbSet<Session> Session { get; set; }

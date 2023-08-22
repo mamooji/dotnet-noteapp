@@ -18,10 +18,7 @@ public class GetWeatherQueryHandler : IRequestHandler<GetWeatherQuery, List<stri
 
     public async Task<List<string>> Handle(GetWeatherQuery request, CancellationToken cancellationToken)
     {
-        // var note = _context.Note.FindAsync()
         var weather = new List<string> { "Hello", "Muhammad's", "World" };
-        List<bool> list = _context.Note.Select(n => n.Title == "test").ToList();
-
         return weather;
     }
 }

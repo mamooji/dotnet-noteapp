@@ -2,7 +2,25 @@
 
 #starts the app like "npm run dev"
 run:
-	@cd WebApi && dotnet run 
+	@cd WebApi && dotnet run --human-logs
+
+migration:
+	@dotnet ef migrations add $(name) --project Infrastructure --startup-project WebApi --output-dir Persistence/Migrations
+
+remove-migration:
+	@dotnet ef migrations remove --project Infrastructure --startup-project WebApi
+
+update-database:
+	@dotnet ef database update --project Infrastructure --startup-project WebApi
+
+clear-database:
+	@cd WebApi && yes | dotnet ef database drop && yes | dotnet ef database update
+
+up-app:
+	@docker-compose up -d --build
+
+down-app:
+	@docker-compose down
 
 #seed:
 #	@cd src/WebUI && dotnet run --seed
@@ -16,12 +34,7 @@ run:
 #test:
 #	@dotnet test
 #
-#up-app:
-#	@docker-compose up -d --build
-#
-#down-app:
-#	@docker-compose down
-#
+
 #up:
 #	@docker-compose -f docker-compose.infra.yml up -d --build
 #
@@ -47,8 +60,7 @@ run:
 #logs:
 #	@docker inspect --format='{{.LogPath}}' $(id)
 #	
-#migration:
-#	@dotnet ef migrations add $(name) --project src/Infrastructure --startup-project src/WebUI --output-dir Persistence/Migrations
+
 #
 #remove-migration:
 #	@dotnet ef migrations remove --project src/Infrastructure --startup-project src/WebUI
