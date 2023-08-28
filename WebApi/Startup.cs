@@ -6,12 +6,14 @@ using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using NSwag;
+using NSwag.Generation.Processors.Security;
 using Serilog;
 using WebApi.Filters;
 using WebApi.Middleware;
 using DependencyInjection = Application.DependencyInjection;
 
-namespace WebApi;
+namespace Backend.WebApi;
 
 public class Startup
 {
@@ -58,16 +60,18 @@ public class Startup
         services.AddOpenApiDocument(configure =>
         {
             configure.Title = "Backend API";
-            // configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
-            // {
-            //     Type = OpenApiSecuritySchemeType.ApiKey,
-            //     Name = "Authorization",
-            //     In = OpenApiSecurityApiKeyLocation.Header,
-            //     Description = "Type into the textbox: Bearer {your JWT token}."
-            // });
+            configure.Version = "v1";
+            configure.Description = "and Dotnet backend for my notes app";
+            configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
+            {
+                Type = OpenApiSecuritySchemeType.ApiKey,
+                Name = "Authorization",
+                In = OpenApiSecurityApiKeyLocation.Header,
+                Description = "Type into the textbox: Bearer {your JWT token}."
+            });
             configure.AllowReferencesWithProperties = true;
             //
-            // configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
+            configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
         });
     }
 

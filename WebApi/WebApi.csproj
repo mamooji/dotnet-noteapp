@@ -6,7 +6,7 @@
         <AssemblyName>Backend.WebApi</AssemblyName>
         <IsPackable>true</IsPackable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <!--        user secrets                         -->
+        <NoWarn>$(NoWarn);1591</NoWarn>
         <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>

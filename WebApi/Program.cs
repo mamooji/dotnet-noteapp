@@ -6,9 +6,9 @@ using Infrastructure.Persistence;
 using Infrastructure.Services;
 using Serilog;
 
-namespace WebApi;
+namespace Backend.WebApi;
 
-public class Program
+public abstract class Program
 {
     private const string HumanReadbleFlag = "--human-logs";
     private static readonly ArgumentParser ArgumentParser = new();
@@ -27,7 +27,6 @@ public class Program
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                //resolve services for hangfire up from before processing begins:
 
                 Log.Logger.Information("Application booted");
                 try
@@ -35,11 +34,12 @@ public class Program
                     var context = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
 
                     Log.Logger.Information("Running Entity Framework Database Migrations...");
+
                     await SqlDatabaseSeedAsync.MigrateDatabase(context);
                 }
                 catch (Exception ex)
                 {
-                    Log.Logger.Error(ex, "An error occurred while migrating or seeding the database.");
+                    Log.Logger.Error(ex, "An error occurred while migrating or seeding the database");
                     throw;
                 }
             }
@@ -60,7 +60,7 @@ public class Program
             _startupFailures++;
             if (_startupFailures > 3)
             {
-                Log.Logger.Fatal(ex, "Fatal error occurred.");
+                Log.Logger.Fatal(ex, "Fatal error occurred");
             }
             else
             {

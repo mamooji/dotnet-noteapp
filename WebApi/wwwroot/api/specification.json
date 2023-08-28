@@ -3,7 +3,8 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Backend API",
-    "version": "1.0.0"
+    "description": "and Dotnet backend for my notes app",
+    "version": "v1"
   },
   "paths": {
     "/api/v1/weatherforecast": {
@@ -31,5 +32,19 @@
       }
     }
   },
-  "components": {}
+  "components": {
+    "securitySchemes": {
+      "JWT": {
+        "type": "apiKey",
+        "description": "Type into the textbox: Bearer {your JWT token}.",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
+  "security": [
+    {
+      "JWT": []
+    }
+  ]
 }
