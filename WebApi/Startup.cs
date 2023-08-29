@@ -1,6 +1,6 @@
 ﻿using Application;
+using Application.Common.Configurations;
 using Hangfire;
-using Infrastructure;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +11,7 @@ using NSwag.Generation.Processors.Security;
 using Serilog;
 using WebApi.Filters;
 using WebApi.Middleware;
-using DependencyInjection = Application.DependencyInjection;
+using DependencyInjection = Infrastructure.DependencyInjection;
 
 namespace Backend.WebApi;
 
@@ -27,12 +27,18 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+        var identityServerConfigurationSection = Configuration.GetSection("IdentityServerConfiguration");
+
+        services.Configure<IdentityServerConfiguration>(identityServerConfigurationSection);
+
+        var identityServerConfiguration = identityServerConfigurationSection.Get<IdentityServerConfiguration>();
+
         services.AddAutoMapper(typeof(Startup), typeof(DependencyInjection));
         services.AddApplication();
 
         services.AddCors(options => { options.AddPolicy("CorsPolicy", GetCorsPolicy()); });
 
-        services.AddInfrastructure(Configuration);
+        DependencyInjection.AddInfrastructure(services, Configuration, identityServerConfiguration);
 
         services.AddRouting(options => options.LowercaseUrls = true);
 
