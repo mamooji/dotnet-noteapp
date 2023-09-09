@@ -6,6 +6,21 @@ namespace Application.Common.Interfaces;
 public interface IApplicationDbContext : IDisposable
 {
     DbSet<Note> Note { get; set; }
-    DbSet<ApplicationUser> ApplicationUsers { get; set; }
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    DbSet<ApplicationUser> Users { get; set; }
+    string ConnectionString { get; }
+
+    DbSet<IdentityRole> Roles { get; set; }
+    Task<int> SaveChangesAsync();
+    int SaveChanges();
+
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+    Task BeginTransactionAsync();
+
+    Task CommitTransactionAsync();
+
+    void RollbackTransaction();
+
+    Task Ping();
+    void ForceReloadFromDatabase<T>(T entity) where T : class;
+    void ForceUpdateToDatabase<T>(T entity) where T : class;
 }

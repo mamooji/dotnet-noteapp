@@ -8,7 +8,6 @@ using Duende.IdentityServer.EntityFramework.Extensions;
 using Duende.IdentityServer.EntityFramework.Interfaces;
 using Duende.IdentityServer.EntityFramework.Options;
 using Infrastructure.Persistence.Extensions;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -19,19 +18,26 @@ namespace Infrastructure.Persistence;
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole, string>, IApplicationDbContext,
     IPersistedGrantDbContext
 {
+    private readonly ICurrentUserService _currentUserService;
     private readonly IOptions<OperationalStoreOptions> _operationalStoreOptions;
     private IDbContextTransaction _currentTransaction;
 
-    public ApplicationDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions) :
+    public ApplicationDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions,
+        ICurrentUserService currentUserService) :
         base(options)
     {
+        _currentUserService = currentUserService;
         _operationalStoreOptions = operationalStoreOptions;
     }
 
+    public DbSet<Note> Note { get; set; }
+
     public string ConnectionString => Database.GetConnectionString();
 
-    public DbSet<Note> Note { get; set; }
-    public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+    public async Task<int> SaveChangesAsync()
+    {
+        return await SaveChangesAsync(CancellationToken.None);
+    }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
@@ -41,9 +47,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
             switch (entry.State)
             {
                 case EntityState.Added:
+                    entry.Entity.CreatedBy = _currentUserService.ApplicationUserId;
                     entry.Entity.Created = utcNow;
                     break;
                 case EntityState.Modified:
+                    entry.Entity.LastModifiedBy = _currentUserService.ApplicationUserId;
                     entry.Entity.LastModified = utcNow;
                     break;
             }
@@ -51,10 +59,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         return await base.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<int> SaveChangesAsync()
-    {
-        return await SaveChangesAsync(CancellationToken.None);
-    }
 
     public DbSet<PersistedGrant> PersistedGrants { get; set; }
 

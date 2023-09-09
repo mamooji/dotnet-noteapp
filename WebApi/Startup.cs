@@ -1,6 +1,9 @@
 ﻿using Application;
 using Application.Common.Configurations;
+using Application.Common.Interfaces;
+using Backend.WebApi.Services;
 using Hangfire;
+using Infrastructure;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -33,18 +36,19 @@ public class Startup
 
         var identityServerConfiguration = identityServerConfigurationSection.Get<IdentityServerConfiguration>();
 
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddAutoMapper(typeof(Startup), typeof(DependencyInjection));
         services.AddApplication();
 
         services.AddCors(options => { options.AddPolicy("CorsPolicy", GetCorsPolicy()); });
 
-        DependencyInjection.AddInfrastructure(services, Configuration, identityServerConfiguration);
+        services.AddInfrastructure(Configuration, identityServerConfiguration);
 
         services.AddRouting(options => options.LowercaseUrls = true);
 
         services.AddHttpContextAccessor();
 
-        services.AddMvc();
+        // services.AddMvc();
 
         services.AddHealthChecks().AddDbContextCheck<ApplicationDbContext>();
 

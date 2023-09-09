@@ -16,12 +16,17 @@ update-database:
 clear-database:
 	@cd WebApi && yes | dotnet ef database drop && yes | dotnet ef database update
 
+jump-to-migration:
+	@dotnet ef database update $(name) --project Infrastructure --startup-project WebApi
+
 up-app:
 	@docker-compose up -d --build
 
 down-app:
 	@docker-compose down
 
+clean:
+	@cd WebApI && dotnet clean
 #seed:
 #	@cd src/WebUI && dotnet run --seed
 #	
@@ -65,8 +70,7 @@ down-app:
 #remove-migration:
 #	@dotnet ef migrations remove --project src/Infrastructure --startup-project src/WebUI
 #
-#jump-to-migration:
-#	@dotnet ef database update $(name) --project src/Infrastructure --startup-project src/WebUI
+
 #
 #update-database:
 #	@dotnet ef database update --project src/Infrastructure --startup-project src/WebUI

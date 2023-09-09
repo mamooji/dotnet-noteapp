@@ -1,9 +1,13 @@
 using Application.Common.Interfaces;
+using Domain.Entities;
 using Domain.Utility;
 using Hangfire;
 using Hangfire.Storage;
 using Infrastructure.Persistence;
+using Infrastructure.Persistence.Seeders;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace Backend.WebApi;
@@ -34,8 +38,13 @@ public abstract class Program
                     var context = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
 
                     Log.Logger.Information("Running Entity Framework Database Migrations...");
-
                     await SqlDatabaseSeedAsync.MigrateDatabase(context);
+
+                    Log.Logger.Information("Seeding roles and claims...");
+                    await SeedRoleClaims(services, context);
+
+                    Log.Logger.Information("Seeding users (if needed)...");
+                    // await SeedDefaultUsers(services, context);
                 }
                 catch (Exception ex)
                 {
@@ -70,6 +79,24 @@ public abstract class Program
         }
     }
 
+    private static async Task SeedRoleClaims(IServiceProvider services, IApplicationDbContext context)
+    {
+        var roleService = services.GetRequiredService<IRoleService>();
+        var claimSeeder = new RoleClaimSeeder(context, roleService);
+        await claimSeeder.SeedAllRoleClaims();
+    }
+
+    private static async Task SeedDefaultUsers(IServiceProvider services, IApplicationDbContext context)
+    {
+        var usersExist = await context.Users.AnyAsync();
+        if (!usersExist)
+        {
+            var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+            var userSeeder = new DefaultUserSeeder(context, userManager);
+            await userSeeder.Seed();
+        }
+    }
+
     private static IHostBuilder CreateHostBuilder(string[] args)
     {
         var useHumanReadableLogs = ArgumentParser.FlagExists(HumanReadbleFlag, args);
@@ -79,38 +106,3 @@ public abstract class Program
             .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }
 }
-
-// var builder = WebApplication.CreateBuilder(args);
-//
-// // Add services to the container.
-//
-// builder.Services.AddControllers();
-// // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-// builder.Services.AddEndpointsApiExplorer();
-// builder.Services.AddSwaggerGen();
-// builder.Services
-//     .AddApplication()
-//     .AddInfrastructure(builder.Configuration)
-//     .AddPresentation();
-//
-//
-// builder.Host.UseSerilog((context, configuration) =>
-//     configuration.ReadFrom.Configuration(context.Configuration));
-//
-// var app = builder.Build();
-//
-// // Configure the HTTP request pipeline.
-// if (app.Environment.IsDevelopment())
-// {
-//     app.UseSwagger();
-//     app.UseSwaggerUI();
-// }
-//
-//
-// app.UseHttpsRedirection();
-//
-// app.UseAuthorization();
-//
-// app.MapControllers();
-//
-// app.Run();

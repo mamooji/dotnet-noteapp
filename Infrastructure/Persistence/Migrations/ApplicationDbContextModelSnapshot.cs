@@ -43,7 +43,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnName("concurrency_stamp");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)")
                         .HasColumnName("email");
@@ -119,6 +118,38 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("application_user", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("concurrency_stamp");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)")
+                        .HasColumnName("normalized_name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_identity_role");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("role_name_index")
+                        .HasFilter("[normalized_name] IS NOT NULL");
+
+                    b.ToTable("identity_role", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Entities.Note", b =>
                 {
                     b.Property<int>("Id")
@@ -128,14 +159,9 @@ namespace Infrastructure.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ApplicationUserId")
-                        .HasColumnType("int")
-                        .HasColumnName("application_user_id");
-
-                    b.Property<string>("ApplicationUserId1")
-                        .IsRequired()
+                    b.Property<string>("ApplicationUserId")
                         .HasColumnType("nvarchar(450)")
-                        .HasColumnName("application_user_id1");
+                        .HasColumnName("application_user_id");
 
                     b.Property<string>("Body")
                         .IsRequired()
@@ -151,7 +177,7 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("created_by");
 
-                    b.Property<DateTime>("LastModified")
+                    b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2")
                         .HasColumnName("last_modified");
 
@@ -168,8 +194,8 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_note");
 
-                    b.HasIndex("ApplicationUserId1")
-                        .HasDatabaseName("ix_note_application_user_id1");
+                    b.HasIndex("ApplicationUserId")
+                        .HasDatabaseName("ix_note_application_user_id");
 
                     b.ToTable("note");
                 });
@@ -352,38 +378,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("persisted_grant", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("id");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("concurrency_stamp");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)")
-                        .HasColumnName("name");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)")
-                        .HasColumnName("normalized_name");
-
-                    b.HasKey("Id")
-                        .HasName("pk_identity_role");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("role_name_index")
-                        .HasFilter("[normalized_name] IS NOT NULL");
-
-                    b.ToTable("identity_role", (string)null);
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
@@ -525,17 +519,15 @@ namespace Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("Domain.Entities.ApplicationUser", "ApplicationUser")
                         .WithMany("Notes")
-                        .HasForeignKey("ApplicationUserId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_note_application_user_application_user_id1");
+                        .HasForeignKey("ApplicationUserId")
+                        .HasConstraintName("fk_note_application_user_application_user_id");
 
                     b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Domain.Entities.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -565,7 +557,7 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Domain.Entities.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)

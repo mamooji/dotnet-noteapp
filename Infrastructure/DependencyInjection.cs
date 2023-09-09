@@ -2,14 +2,19 @@
 using Application.Common.Authorization;
 using Application.Common.Configurations;
 using Application.Common.Interfaces;
+using Application.ServicesAndUtilities;
 using Domain.Entities;
+using Domain.Utility;
 using Duende.IdentityServer.Models;
 using Hangfire;
 using Hangfire.MemoryStorage;
+using Infrastructure.Authorization;
 using Infrastructure.Identity;
 using Infrastructure.Persistence;
+using Infrastructure.Services;
+using Infrastructure.Services.Dao;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,6 +43,7 @@ public static class DependencyInjection
                 b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
         });
 
+        // Use Newtonsoft.JSON for JSONB mapping. GeoJSON requires this, so don't turn off.
         NpgsqlConnection.GlobalTypeMapper.UseJsonNet(null, null, new JsonSerializerSettings
         {
             ContractResolver = new DefaultContractResolver
@@ -63,7 +69,7 @@ public static class DependencyInjection
                 options.User.RequireUniqueEmail = true;
             })
             .AddRoles<IdentityRole>()
-            .AddRoleManager<RoleManager<IdentityRole>>()
+            .AddRoleManager<Microsoft.AspNetCore.Identity.RoleManager<IdentityRole>>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddPasswordValidator<UsernameAsPasswordValidator<ApplicationUser>>();
 
@@ -94,6 +100,15 @@ public static class DependencyInjection
                         Scopes = resource.Scopes
                     });
             });
+
+        services.AddTransient<IIdentityService, IdentityService>();
+        services.AddTransient<IRoleService, RoleService>();
+        services.AddTransient<IMapperUtility, MapperUtility>();
+        // services.AddTransient<IProfileService, ProfileService>();
+
+        services.AddTransient<IDaoService, DaoService>();
+
+        services.AddScoped<IAuthorizationHandler, HasClaimsAuthorizationHandler>();
 
         services.AddAuthentication(options => { options.DefaultAuthenticateScheme = "Bearer"; })
             .AddIdentityServerJwt()

@@ -2,7 +2,11 @@
 
 public enum AuthorizationResource
 {
-    Claim
+    Asset,
+    FileUpload,
+    Symbol,
+    User,
+    Workflow
 }
 
 /// <summary>

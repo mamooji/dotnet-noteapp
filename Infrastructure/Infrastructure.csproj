@@ -10,15 +10,27 @@
         <PackageReference Include="AutoMapper" Version="12.0.1"/>
         <PackageReference Include="Azure.Storage.Blobs" Version="12.17.0"/>
         <PackageReference Include="EFCore.NamingConventions" Version="7.0.2"/>
+        <PackageReference Include="GeoJSON.Net" Version="1.2.19"/>
+        <PackageReference Include="Handlebars.Net" Version="2.1.4"/>
         <PackageReference Include="Hangfire" Version="1.8.5"/>
         <PackageReference Include="Hangfire.MemoryStorage" Version="1.8.0"/>
         <PackageReference Include="Hangfire.PostgreSql" Version="1.20.0"/>
         <PackageReference Include="Hangfire.SqlServer" Version="1.8.5"/>
         <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="7.0.10"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.10"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.10"/>
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.10"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.10"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.7"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.10">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0"/>
         <PackageReference Include="Npgsql" Version="7.0.4"/>
@@ -31,8 +43,9 @@
         <ProjectReference Include="..\Application\Application.csproj"/>
     </ItemGroup>
 
+
     <ItemGroup>
-        <Folder Include="Persistence\Seeders\"/>
+        <Folder Include="Persistence\Migrations\"/>
     </ItemGroup>
 
 </Project>

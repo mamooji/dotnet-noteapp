@@ -8,9 +8,7 @@ public class ApplicationUser : IdentityUser
 
     public string LastName { get; set; }
 
-    public string Email { get; set; }
-
     public string AvatarUrl { get; set; }
 
-    public List<Note> Notes { get; set; } = new();
+    // public List<Note> Notes { get; } = new();
 }

@@ -6,89 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class hello : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Note_User_UserId",
-                table: "Note");
-
-            migrationBuilder.DropTable(
-                name: "Account");
-
-            migrationBuilder.DropTable(
-                name: "Session");
-
-            migrationBuilder.DropTable(
-                name: "VerificationToken");
-
-            migrationBuilder.DropTable(
-                name: "User");
-
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_Note",
-                table: "Note");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Note_UserId",
-                table: "Note");
-
-            migrationBuilder.DropColumn(
-                name: "UserId",
-                table: "Note");
-
-            migrationBuilder.RenameTable(
-                name: "Note",
-                newName: "note");
-
-            migrationBuilder.RenameColumn(
-                name: "Title",
-                table: "note",
-                newName: "title");
-
-            migrationBuilder.RenameColumn(
-                name: "Created",
-                table: "note",
-                newName: "created");
-
-            migrationBuilder.RenameColumn(
-                name: "Body",
-                table: "note",
-                newName: "body");
-
-            migrationBuilder.RenameColumn(
-                name: "Id",
-                table: "note",
-                newName: "id");
-
-            migrationBuilder.RenameColumn(
-                name: "LastModifiedBy",
-                table: "note",
-                newName: "last_modified_by");
-
-            migrationBuilder.RenameColumn(
-                name: "LastModified",
-                table: "note",
-                newName: "last_modified");
-
-            migrationBuilder.RenameColumn(
-                name: "CreatedBy",
-                table: "note",
-                newName: "created_by");
-
-            migrationBuilder.AddColumn<string>(
-                name: "application_user_id",
-                table: "note",
-                type: "nvarchar(450)",
-                nullable: true);
-
-            migrationBuilder.AddPrimaryKey(
-                name: "pk_note",
-                table: "note",
-                column: "id");
-
             migrationBuilder.CreateTable(
                 name: "application_user",
                 columns: table => new
@@ -96,10 +18,10 @@ namespace Infrastructure.Persistence.Migrations
                     id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     first_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     last_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     avatar_url = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     user_name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     normalized_user_name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     normalized_email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     email_confirmed = table.Column<bool>(type: "bit", nullable: false),
                     password_hash = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -250,6 +172,30 @@ namespace Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "note",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    application_user_id = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    body = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    last_modified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    created_by = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    last_modified_by = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_note", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_note_application_user_application_user_id",
+                        column: x => x.application_user_id,
+                        principalTable: "application_user",
+                        principalColumn: "id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "identity_role_claim<string>",
                 columns: table => new
                 {
@@ -293,11 +239,6 @@ namespace Infrastructure.Persistence.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "ix_note_application_user_id",
-                table: "note",
-                column: "application_user_id");
 
             migrationBuilder.CreateIndex(
                 name: "email_index",
@@ -355,6 +296,11 @@ namespace Infrastructure.Persistence.Migrations
                 column: "use");
 
             migrationBuilder.CreateIndex(
+                name: "ix_note_application_user_id",
+                table: "note",
+                column: "application_user_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_persisted_grant_consumed_time",
                 table: "persisted_grant",
                 column: "consumed_time");
@@ -373,22 +319,11 @@ namespace Infrastructure.Persistence.Migrations
                 name: "ix_persisted_grant_subject_id_session_id_type",
                 table: "persisted_grant",
                 columns: new[] { "subject_id", "session_id", "type" });
-
-            migrationBuilder.AddForeignKey(
-                name: "fk_note_application_user_application_user_id",
-                table: "note",
-                column: "application_user_id",
-                principalTable: "application_user",
-                principalColumn: "id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "fk_note_application_user_application_user_id",
-                table: "note");
-
             migrationBuilder.DropTable(
                 name: "device_flow_codes");
 
@@ -411,6 +346,9 @@ namespace Infrastructure.Persistence.Migrations
                 name: "key");
 
             migrationBuilder.DropTable(
+                name: "note");
+
+            migrationBuilder.DropTable(
                 name: "persisted_grant");
 
             migrationBuilder.DropTable(
@@ -418,167 +356,6 @@ namespace Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "application_user");
-
-            migrationBuilder.DropPrimaryKey(
-                name: "pk_note",
-                table: "note");
-
-            migrationBuilder.DropIndex(
-                name: "ix_note_application_user_id",
-                table: "note");
-
-            migrationBuilder.DropColumn(
-                name: "application_user_id",
-                table: "note");
-
-            migrationBuilder.RenameTable(
-                name: "note",
-                newName: "Note");
-
-            migrationBuilder.RenameColumn(
-                name: "title",
-                table: "Note",
-                newName: "Title");
-
-            migrationBuilder.RenameColumn(
-                name: "created",
-                table: "Note",
-                newName: "Created");
-
-            migrationBuilder.RenameColumn(
-                name: "body",
-                table: "Note",
-                newName: "Body");
-
-            migrationBuilder.RenameColumn(
-                name: "id",
-                table: "Note",
-                newName: "Id");
-
-            migrationBuilder.RenameColumn(
-                name: "last_modified_by",
-                table: "Note",
-                newName: "LastModifiedBy");
-
-            migrationBuilder.RenameColumn(
-                name: "last_modified",
-                table: "Note",
-                newName: "LastModified");
-
-            migrationBuilder.RenameColumn(
-                name: "created_by",
-                table: "Note",
-                newName: "CreatedBy");
-
-            migrationBuilder.AddColumn<string>(
-                name: "UserId",
-                table: "Note",
-                type: "nvarchar(450)",
-                nullable: false,
-                defaultValue: "");
-
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_Note",
-                table: "Note",
-                column: "Id");
-
-            migrationBuilder.CreateTable(
-                name: "User",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmailVerifed = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_User", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "VerificationToken",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VerificationToken", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Account",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AccessToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ExpiresAt = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IdToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Provider = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProviderAccountId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Scope = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SessionState = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TokenType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Account", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Account_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Session",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Expires = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SessionToken = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Session", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Session_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Note_UserId",
-                table: "Note",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Account_UserId",
-                table: "Account",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Session_UserId",
-                table: "Session",
-                column: "UserId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Note_User_UserId",
-                table: "Note",
-                column: "UserId",
-                principalTable: "User",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
         }
     }
 }
