@@ -45,14 +45,11 @@ public class RoleClaimSeeder
         var role = CustomRole.Admin;
         await DeleteAllClaimsFromRole(role);
 
-        var claims = new List<string>();
-
-        foreach (AuthorizationResource resource in _resources)
-        foreach (AuthorizationVerb verb in _verbs)
-        {
-            var claim = new MyClaim(resource, verb);
-            claims.Add(claim.ToString());
-        }
+        var claims = (from AuthorizationResource resource in _resources
+            from AuthorizationVerb verb in _verbs
+            select new MyClaim(resource, verb)
+            into claim
+            select claim.ToString()).ToList();
 
         await _roleService.Create(claims, role);
     }

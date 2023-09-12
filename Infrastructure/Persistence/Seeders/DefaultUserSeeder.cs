@@ -18,8 +18,8 @@ public class DefaultUserSeeder
 
     public async Task Seed()
     {
-        await SeedUser("admin@test.com", "admin", "password", CustomRole.Admin, "Admin", "LastName");
-        await SeedUser("user@test.com", "user", "password", CustomRole.User, "User", "LastName");
+        await SeedUser("admin@test.com", "admin", "Qweqwe1!1234", CustomRole.Admin, "Admin", "LastName");
+        await SeedUser("user@test.com", "user", "Qweqwe1!1234", CustomRole.User, "User", "LastName");
     }
 
     /// <summary>

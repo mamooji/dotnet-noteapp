@@ -44,7 +44,7 @@ public abstract class Program
                     await SeedRoleClaims(services, context);
 
                     Log.Logger.Information("Seeding users (if needed)...");
-                    // await SeedDefaultUsers(services, context);
+                    await SeedDefaultUsers(services, context);
                 }
                 catch (Exception ex)
                 {
