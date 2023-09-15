@@ -104,11 +104,27 @@ public static class DependencyInjection
         services.AddTransient<IIdentityService, IdentityService>();
         services.AddTransient<IRoleService, RoleService>();
         services.AddTransient<IMapperUtility, MapperUtility>();
-        // services.AddTransient<IProfileService, ProfileService>();
+        services.AddTransient<ILoginService, LoginService>();
+        services.AddTransient<IUserService, UserService>();
 
         services.AddTransient<IDaoService, DaoService>();
 
         services.AddScoped<IAuthorizationHandler, HasClaimsAuthorizationHandler>();
+
+
+        // services.AddTransient<IConfigService, ConfigService>();
+        // services.AddTransient<IIdentityService, IdentityService>();
+        // services.AddTransient<IBlobStorage, BlobStorage>();
+        // services.AddTransient<ILoginService, LoginService>();
+        // services.AddTransient<IUserService, UserService>();
+        // services.AddTransient<IMultiFactorAuthService, MultiFactorAuthenticationService>();
+        // services.AddTransient<IRoleService, RoleService>();
+        // services.AddTransient<IProfileService, ProfileService>();
+        // services.AddTransient<IDaoService, DaoService>();
+        // services.AddTransient<IMapperUtility, MapperUtility>();
+
+        services.AddHttpClient("TokenClient", c =>
+            c.BaseAddress = new Uri($"{config.BaseUrl}/connect/token"));
 
         services.AddAuthentication(options => { options.DefaultAuthenticateScheme = "Bearer"; })
             .AddIdentityServerJwt()

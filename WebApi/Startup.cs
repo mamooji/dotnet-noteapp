@@ -80,7 +80,6 @@ public class Startup
                 Description = "Type into the textbox: Bearer {your JWT token}."
             });
             configure.AllowReferencesWithProperties = true;
-            //
             configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
         });
     }
@@ -115,6 +114,7 @@ public class Startup
         app.UseRouting();
         app.UseCors("CorsPolicy");
         app.UseAuthentication();
+        app.UseIdentityServer();
         app.UseAuthorization();
         app.UseEndpoints(endpoints =>
         {
