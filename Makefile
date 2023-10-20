@@ -1,7 +1,4 @@
-﻿#This Make file is basically a scripts file:
-
-#starts the app like "npm run dev"
-run:
+﻿run:
 	@cd WebApi && dotnet run --human-logs
 
 migration:
