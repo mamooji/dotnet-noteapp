@@ -1,6 +1,8 @@
 ﻿using Application;
 using Application.Common.Configurations;
 using Application.Common.Interfaces;
+using Backend.WebApi.Filters;
+using Backend.WebApi.Middleware;
 using Backend.WebApi.Services;
 using Hangfire;
 using Infrastructure;
@@ -12,8 +14,6 @@ using Newtonsoft.Json.Serialization;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using Serilog;
-using WebApi.Filters;
-using WebApi.Middleware;
 using DependencyInjection = Infrastructure.DependencyInjection;
 
 namespace Backend.WebApi;

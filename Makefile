@@ -1,4 +1,4 @@
-﻿run:
+run:
 	@cd WebApi && dotnet run --human-logs
 
 migration:

@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace WebApi.Middleware;
+namespace Backend.WebApi.Middleware;
 
 public class ExceptionMiddleware
 {

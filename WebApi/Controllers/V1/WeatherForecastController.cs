@@ -1,6 +1,5 @@
 using Application.Weather.Queries;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Controllers.V1;
 
 namespace Backend.WebApi.Controllers.V1;
 

@@ -3,7 +3,7 @@ using Application.Common.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace WebApi.Filters;
+namespace Backend.WebApi.Filters;
 
 public class ApiExceptionFilter : ExceptionFilterAttribute
 {
