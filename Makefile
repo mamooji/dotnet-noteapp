@@ -16,16 +16,17 @@ clear-database:
 jump-to-migration:
 	@dotnet ef database update $(name) --project Infrastructure --startup-project WebApi
 
-up-app:
+up:
 	@docker-compose up -d --build
 
-down-app:
+down:
 	@docker-compose down
 
 clean:
 	@cd WebApI && dotnet clean
-#seed:
-#	@cd src/WebUI && dotnet run --seed
+
+seed:
+	@cd WebApi && dotnet run --seed
 #	
 #clean:
 #	@cd src/WebUI && dotnet clean

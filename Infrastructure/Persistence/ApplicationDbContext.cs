@@ -39,6 +39,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         return await SaveChangesAsync(CancellationToken.None);
     }
 
+    public async Task<int> SaveSeededChangesAsync()
+    {
+        return await base.SaveChangesAsync(CancellationToken.None);
+    }
+    
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
         var utcNow = DateTime.UtcNow;

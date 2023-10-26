@@ -45,6 +45,9 @@ public abstract class Program
 
                     Log.Logger.Information("Seeding users (if needed)...");
                     await SeedDefaultUsers(services, context);
+
+                    Log.Logger.Information("Seeding Notes ...");
+                    await SeedDefaultNotes(services, context);
                 }
                 catch (Exception ex)
                 {
@@ -96,6 +99,18 @@ public abstract class Program
             await userSeeder.Seed();
         }
     }
+
+    private static async Task SeedDefaultNotes(IServiceProvider services, IApplicationDbContext context)
+    {
+        var notesExist = await context.Note.AnyAsync();
+        if (!notesExist)
+        {
+            var noteSeeder = services.GetRequiredService<NoteSeeder>();
+            await noteSeeder.Seed();
+        }
+    }
+    
+    
 
     private static IHostBuilder CreateHostBuilder(string[] args)
     {

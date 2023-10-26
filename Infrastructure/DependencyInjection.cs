@@ -11,6 +11,7 @@ using Hangfire.MemoryStorage;
 using Infrastructure.Authorization;
 using Infrastructure.Identity;
 using Infrastructure.Persistence;
+using Infrastructure.Persistence.Seeders;
 using Infrastructure.Services;
 using Infrastructure.Services.Dao;
 using Microsoft.AspNetCore.Authentication;
@@ -106,9 +107,8 @@ public static class DependencyInjection
         services.AddTransient<IMapperUtility, MapperUtility>();
         services.AddTransient<ILoginService, LoginService>();
         services.AddTransient<IUserService, UserService>();
-
         services.AddTransient<IDaoService, DaoService>();
-
+        services.AddTransient<NoteSeeder>();
         services.AddScoped<IAuthorizationHandler, HasClaimsAuthorizationHandler>();
 
 
