@@ -50,7 +50,7 @@ public class LoginService : ILoginService
         var applicationUser = await _userService.GetByUserName(userName);
         if (applicationUser == null) throw new LogicalException();
 
-        _logger.LogInformation(AppLogEvents.SecurityAudit, "Successful login attempt for user {userName}", userName);
+        _logger.LogInformation(AppLogEvents.SecurityAudit, "Successful login attempt for user: {UserName}", userName);
         return new LoginResult
         {
             AccessToken = response.AccessToken,

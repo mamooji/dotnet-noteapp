@@ -53,7 +53,7 @@ public class DefaultUserSeeder
         };
 
         await _userManager.CreateAsync(identityUser, password);
-        // await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         if (role != null) await _userManager.AddToRoleAsync(identityUser, role);
 
