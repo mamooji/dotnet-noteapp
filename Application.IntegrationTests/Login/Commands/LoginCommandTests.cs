@@ -16,6 +16,9 @@ public class LoginCommandTests : TestBase
     private const string EMAIL_HOST = "@test.test";
     private const string PASSWORD = "S3tupT3$t!ng";
     private const string USER_NAME = "UserName";
+    private const string FIRST_NAME = "firstName";
+    private const string LAST_NAME = "LastName";
+    private const string PHONE_NUMBER = "519-123-4567";
     private string applicationUserId;
 
     [SetUp]
@@ -25,7 +28,10 @@ public class LoginCommandTests : TestBase
         applicationUserId = await Testing.SeedUser(
             $"{Guid.NewGuid()}{EMAIL_HOST}",
             USER_NAME,
-            PASSWORD
+            PASSWORD,
+            FIRST_NAME,
+            LAST_NAME,
+            PHONE_NUMBER
         );
     }
 

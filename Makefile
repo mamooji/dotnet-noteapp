@@ -27,7 +27,9 @@ clean:
 
 seed:
 	@cd WebApi && dotnet run --seed
-#	
+
+test:
+	@dotnet test
 #clean:
 #	@cd src/WebUI && dotnet clean
 #

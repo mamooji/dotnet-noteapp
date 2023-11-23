@@ -174,9 +174,9 @@ public class Testing
         string email,
         string userName,
         string password,
-        string firstName = null,
-        string lastName = null,
-        string phoneNumber = null
+        string firstName,
+        string lastName,
+        string phoneNumber 
     )
     {
         using var scope = ScopeFactory.CreateScope();
@@ -268,7 +268,7 @@ public class Testing
 
     public static async Task<string> RunAsDefaultUserAsync()
     {
-        return await RunAsUserAsync("test@local", "Testing1234!");
+        return await RunAsUserAsync("test@local", "Testing1234!", "TestFirstName", "TestLastName", "519-123-4567");
     }
 
     public static async Task<string> RunAsAdminAsync(bool twoFaVerified = true)
@@ -300,13 +300,17 @@ public class Testing
     public static async Task<string> RunAsUserAsync(
         string userName,
         string password,
+        string firstName,
+        string lastName,
+        string phoneNumber,
         List<string> roleNames = null,
         string email = null,
         bool twoFaVerified = true
+        
     )
     {
         var userEmail = email ?? $"{userName}@vehikl.com";
-        CurrentApplicationUserId = await SeedUser(userEmail, userName, password);
+        CurrentApplicationUserId = await SeedUser(userEmail, userName, password, firstName, lastName, phoneNumber);
 
         var claims = new List<Claim>
         {
